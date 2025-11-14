@@ -26,13 +26,11 @@ The model is trained on a large CAN bus dataset and deployed on resource-constra
 │
 ├── 02_Model/                            # Model training and artifacts
 │   ├── 01_IDS_Train_Model.ipynb         # Model training notebook
-│   ├── model_data.h                     # C header file for ESP32
 │   ├── 02_confusion_matrix.png          # Model evaluation visualization
 │   └── 03_training_history.png          # Training metrics
 │
-├── 04_Reciever_ESP32_Code_RawDataset/   # ESP32 firmware
-│   ├── 04_Reciever_ESP32_Code_RawDataset.ino
-│   └── model_data.h                     # TFLite model as C array
+├── 04_Reciever_ESP32_Code/              # ESP32 firmware
+│   └── 04_Reciever_ESP32_Code.ino       # ESP32 intrusion detection code
 │
 ├── 05_Transmitter_ESP8266_Code/         # ESP8266 CAN transmitter
 │   └── 05_Transmitter_ESP8266_Code.ino
@@ -80,10 +78,11 @@ The model is trained on a large CAN bus dataset and deployed on resource-constra
 
 ### Deploying to ESP32
 
-1. Copy `model_data.h` to your Arduino sketch folder
-2. Open `04_Reciever_ESP32_Code_RawDataset.ino` in Arduino IDE
-3. Select ESP32 board and upload
-4. Send CAN data via Serial Monitor in format: `CAN_ID(decimal),DLC,DATA[0-7](hex)`
+1. Train the model using the notebook to generate `model_data.h` (C header file with TFLite model)
+2. Copy `model_data.h` to `04_Reciever_ESP32_Code/` folder
+3. Open `04_Reciever_ESP32_Code.ino` in Arduino IDE
+4. Select ESP32 board and upload
+5. Send CAN data via Serial Monitor (115200 baud) in format: `CAN_ID(decimal),DLC,DATA[0-7](hex)`
 
 Example input:
 ```
@@ -181,4 +180,9 @@ For questions or collaborations, please open an issue or contact the authors.
 
 ---
 
-**Note:** Dataset files (`.csv`) and large model files (`.h5`, `.keras`, `.tflite`) are excluded from this repository due to size constraints. Please train the model using your own CAN bus dataset.
+**Note:** The following files are excluded from this repository (see `.gitignore`):
+- Dataset files (`.csv`) - Too large for GitHub (206+ MB)
+- Model files (`.h5`, `.keras`, `.tflite`) - Large binary files
+- `model_data.h` - Generated C header file with TFLite model (~49 KB)
+
+Please train the model using your own CAN bus dataset to generate these files.
