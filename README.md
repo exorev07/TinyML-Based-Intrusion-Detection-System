@@ -31,23 +31,21 @@
 
 ## 🔍 Overview
 
-As Electric Vehicles (EVs) evolve towards autonomous driving through **V2X (Vehicle-to-Everything)** communication, they become increasingly vulnerable to cyberattacks — particularly on the **CAN (Controller Area Network) bus**, which is the backbone of in-vehicle communication.
+As Electric Vehicles evolve towards autonomous driving through **V2X (Vehicle-to-Everything)** communication, they become increasingly vulnerable to cyberattacks, particularly on the **CAN (Controller Area Network) network**, which is the backbone of in-vehicle communication.
 
-Most existing Intrusion Detection Systems (IDS) rely on **cloud-based architectures** that introduce latency, require internet connectivity, and raise privacy concerns — all of which are unacceptable for safety-critical automotive systems.
+Most existing Intrusion Detection Systems (IDS) rely on **cloud-based architectures** that introduce latency, require frequent internet connectivity, and raise privacy concerns - all of which are critical for such automotive systems.
 
 This project demonstrates an **edge-based IDS** built with **TinyML** that:
 
-- ✅ Runs **entirely on an ESP32** microcontroller (~$5 hardware)
-- ✅ Detects **DoS** and **Fuzzy attacks** in real-time
-- ✅ Operates **fully offline** — no cloud dependency
-- ✅ Preserves **data privacy** — all processing happens on-device
-- ✅ Achieves **84.12% on-device accuracy** with sub-millisecond inference
-
-> 📄 This project was presented as a conference paper written in **IEEE format**.
+- Runs entirely on an **ESP32** microcontroller (~$5 hardware).
+- Detects **DoS** and **Fuzzy attacks** in real-time.
+- Operates **fully offline** - no cloud dependency.
+- Preserves **data privacy** - all processing happens on-device.
+- Achieves **84.12% on-device accuracy** with sub-millisecond inference time.
 
 ---
 
-## 🏗️ System Architecture
+## 📄 System Architecture
 
 ```
       ┌─────────────────────────────┐        WiFi (TCP)          ┌──────────────────────────────────┐
@@ -65,13 +63,13 @@ This project demonstrates an **edge-based IDS** built with **TinyML** that:
       └─────────────────────────────┘                            └──────────────────────────────────┘
 ```
 
-Both devices connect to the **same WiFi network**, simulating a scenario where an attacker node shares the same local network as the vehicle's onboard system.
+Both devices connect to the **same WiFi network** simulating a real life V2X scenario, where an attacker node could share the same local network as the vehicle's onboard system while it's charging and inject malicious attacks via CAN network.
 
 ---
 
-## 🔧 Hardware Requirements
+## 🪛 Hardware Requirements
 
-### ESP32 — Receiver / Vehicle Node (IDS)
+### ESP32 - Receiver / Vehicle Node (IDS)
 
 | Component | Connection | ESP32 Pin |
 |---|---|---|
@@ -81,20 +79,19 @@ Both devices connect to the **same WiFi network**, simulating a scenario where a
 | | MOSI | GPIO 23 |
 | | SCK | GPIO 18 |
 | | CS | GPIO 5 |
-| **I2C LCD (16×2)** | VCC | 3.3V |
+| **I2C LCD Module (16×2)** | VCC | 3.3V |
 | | GND | GND |
 | | SDA | GPIO 21 |
 | | SCL | GPIO 22 |
 | **RGB LED** | Red | GPIO 25 |
-| (Common Anode) | Green | GPIO 26 |
+| | Green | GPIO 26 |
+| | Common Anode | 3.3V |
 
-### ESP8266 — Transmitter / Attacker Node
+### ESP8266 - Transmitter / Attacker Node
 
 | Component | Connection |
 |---|---|
-| **ESP8266** (NodeMCU / Wemos D1 Mini) | USB to Laptop (Serial input) |
-
-> **Note:** The hardware pin connections diagram is also available as `hardware_pin_connections.png` in the repository root.
+| **ESP8266** | USB to Laptop (Serial input) |
 
 ---
 
@@ -136,8 +133,8 @@ Both devices connect to the **same WiFi network**, simulating a scenario where a
 ## 📊 Dataset
 
 - **Source:** CAN bus intrusion dataset containing **~3.5 million CAN frames**
-- **Classes:** 3 — `Attack_Free`, `DoS`, `Fuzzy`
-- **Features per frame:** 10 — `CAN_ID` (numeric), `DLC`, `DATA[0]` through `DATA[7]`
+- **Classes:** 3 - (`Attack_Free`, `DoS`, `Fuzzy`)
+- **Features per frame:** 10 - `CAN_ID` (numeric), `DLC`, `DATA[0]` through `DATA[7]`
 - **Preprocessing:**
   - CAN IDs converted from hex to numeric
   - Data bytes parsed from hex
@@ -150,19 +147,19 @@ The `01_Dataset/dataset_prep.ipynb` notebook handles all data preparation steps.
 
 ## 🧠 Model Pipeline
 
-### 1. Benchmark — XGBoost
+### 1. Benchmark - XGBoost
 - Trained as a baseline classifier
 - Achieved **~92.4% test accuracy**
 - Used to validate dataset quality before neural network training
 
-### 2. Primary Model — MLP (Multi-Layer Perceptron)
+### 2. Primary Model - MLP (Multi-Layer Perceptron)
 - Designed to be **quantization-friendly** for TFLite conversion
 - **Input:** 10 features (scaled CAN frame data)
 - **Output:** 3-class softmax (`Attack_Free`, `DoS`, `Fuzzy`)
 - **Activation:** ReLU (hidden layers) + Softmax (output)
 - Trained for **~80 epochs** using Adam optimizer
 
-### 3. Deployment — TensorFlow Lite
+### 3. Deployment - TensorFlow Lite
 - Keras model → `.tflite` conversion
 - `.tflite` → C byte array (`model_data.h`) for ESP32 embedding
 - Tensor arena: **30 KB** allocated on ESP32
@@ -181,6 +178,8 @@ The `01_Dataset/dataset_prep.ipynb` notebook handles all data preparation steps.
 
 ### Arduino Libraries Required
 
+<div align="center">
+
 | Library | Purpose |
 |---|---|
 | `TensorFlowLite_ESP32` | TFLite Micro runtime for ESP32 |
@@ -188,6 +187,8 @@ The `01_Dataset/dataset_prep.ipynb` notebook handles all data preparation steps.
 | `SD` | SD card read/write |
 | `SPI` | SPI communication |
 | `WiFi` (ESP32) / `ESP8266WiFi` | WiFi connectivity |
+
+</div>
 
 ### Step-by-Step Setup
 
