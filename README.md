@@ -260,6 +260,8 @@ This generates `ids_model.tflite` and `model_data.h`.
 
 ### Model Performance (Offline Validation)
 
+<div align="center">
+
 | Metric | XGBoost (Benchmark) | MLP (TFLite Deployed) |
 |---|---|---|
 | **Test Accuracy** | ~92.4% | **84.12%** |
