@@ -328,7 +328,7 @@ This project was developed as a **Minor Project (Semester 3)** at **IIIT Naya Ra
 <table>
   <tr>
     <td align="center"><a href="https://github.com/akshita24101"><b>Akshita Sondhi</b></a></td>
-    <td align="center"><a href="https://github.com/Ekansh-Bhushan"><b>Ekansh Bhushan</b></a></td>
+    <td align="center"><a href="https://github.com/exorev07"><b>Ekansh Arohi</b></a></td>
   </tr>
 </table>
 
